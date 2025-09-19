@@ -3,7 +3,6 @@ import os
 import time
 import streamlit as st
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import nltk
@@ -25,14 +24,19 @@ import openai
 openai.api_key = os.getenv("GROQ_API_KEY")
 openai.api_base = "https://api.groq.com/openai/v1"
 
+
+# Configure Selenium driver for Linux (Render)
 def get_driver():
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-gpu')
-    service = Service(r'chromedriver.exe')
-    return webdriver.Chrome(service=service, options=options)
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920x1080")
+    return webdriver.Chrome(options=options)
 
+
+# Scrape function
 def scrape_website(url):
     driver = get_driver()
     driver.get(url)
@@ -43,7 +47,9 @@ def scrape_website(url):
         tag.decompose()
     return soup.get_text(separator='\n', strip=True)
 
+
 lemmatizer = WordNetLemmatizer()
+
 
 def get_wordnet_pos(treebank_tag):
     if treebank_tag.startswith('J'):
@@ -56,11 +62,13 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.ADV
     return wordnet.NOUN
 
+
 def lemmatize_text(text):
     tokens = word_tokenize(text)
     pos_tags = pos_tag(tokens)
     lemmas = [lemmatizer.lemmatize(w, get_wordnet_pos(p)) for w, p in pos_tags]
     return " ".join(lemmas)
+
 
 def ask_groq(context, question):
     prompt = f"""You are a smart assistant. Use the website content below to answer:
@@ -75,12 +83,13 @@ Answer:"""
         base_url="https://api.groq.com/openai/v1"
     )
     response = client.chat.completions.create(
-        model="meta-llama/llama-4-scout-17b-16e-instruct",
+        model="openai/gpt-oss-20b",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=1000,
         temperature=0.3,
     )
     return response.choices[0].message.content
+
 
 # Streamlit UI
 st.set_page_config(page_title="Web Scraping Chatbot", page_icon="🤖")
@@ -117,4 +126,3 @@ if st.session_state.lemmatized_text:
             response = ask_groq(st.session_state.lemmatized_text, user_input)
         st.session_state.chat_history.append({"role": "assistant", "content": response})
         st.rerun()
-
