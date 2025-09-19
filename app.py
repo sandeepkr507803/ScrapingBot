@@ -7,11 +7,8 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import nltk
 
-# Download required NLTK resources at runtime
-nltk.download('punkt', quiet=True)
-nltk.download('wordnet', quiet=True)
-nltk.download('averaged_perceptron_tagger', quiet=True)
-nltk.download('omw-1.4', quiet=True)
+# Tell NLTK to use bundled data
+nltk.data.path.append(os.path.join(os.path.dirname(__file__), "nltk_data"))
 
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
@@ -126,3 +123,4 @@ if st.session_state.lemmatized_text:
             response = ask_groq(st.session_state.lemmatized_text, user_input)
         st.session_state.chat_history.append({"role": "assistant", "content": response})
         st.rerun()
+
