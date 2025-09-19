@@ -7,11 +7,11 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import nltk
 
-# Download required NLTK resources
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('omw-1.4')
+# Download required NLTK resources at runtime
+nltk.download('punkt', quiet=True)
+nltk.download('wordnet', quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
+nltk.download('omw-1.4', quiet=True)
 
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
