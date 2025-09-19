@@ -30,7 +30,7 @@ def get_driver():
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
-    service = Service(r'chromedriver-win64\chromedriver.exe')
+    service = Service(r'chromedriver.exe')
     return webdriver.Chrome(service=service, options=options)
 
 def scrape_website(url):
@@ -117,3 +117,4 @@ if st.session_state.lemmatized_text:
             response = ask_groq(st.session_state.lemmatized_text, user_input)
         st.session_state.chat_history.append({"role": "assistant", "content": response})
         st.rerun()
+
