@@ -8,6 +8,8 @@ This project is a Web Scraping Chatbot that:
 * Sends the processed text as context to Groq’s LLM (meta-llama/llama-4-scout-17b-16e-instruct) using the OpenAI-compatible API.
 * Provides a Streamlit chat interface where users can ask questions about the scraped site.
 
+Demo Link: https://scrapingbot-e4pd.onrender.com
+
 ### 2. Setup Instructions
 
 Step 1: Clone the repo
